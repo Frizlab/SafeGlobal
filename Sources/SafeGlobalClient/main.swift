@@ -4,9 +4,8 @@ import SafeGlobal
 
 
 
-let a = 17
-let b = 25
-
-let (result, code) = #stringify(a + b)
-
-print("The value \(result) was produced by the code \"\(code)\"")
+enum Conf : Sendable {
+	
+	@SafeGlobal static var dummy: Int = 42
+	
+}

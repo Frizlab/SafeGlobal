@@ -1,8 +1,9 @@
+import XCTest
+
 import SwiftSyntax
 import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 import SwiftSyntaxMacrosTestSupport
-import XCTest
 
 
 
@@ -12,40 +13,32 @@ import XCTest
 import SafeGlobalMacros
 
 let testMacros: [String: Macro.Type] = [
-	"stringify": StringifyMacro.self,
+	"SafeGlobal": SafeGlobalMacro.self,
 ]
 #endif
 
-final class SafeGlobalTests: XCTestCase {
+
+final class SafeGlobalTests : XCTestCase {
+	
 	func testMacro() throws {
 #if canImport(SafeGlobalMacros)
-		assertMacroExpansion(
-				"""
-				#stringify(a + b)
+		assertMacroExpansion("""
+				enum Conf : Sendable {
+					@SafeGlobal static var dummy: Int = 42
+				}
 				""",
-				expandedSource: """
-				(a + b, "a + b")
+			expandedSource: """
+				enum Conf : Sendable {
+					static var dummy: Int = 42
+				
+					static var _dummy: Int = 42
+				}
 				""",
-				macros: testMacros
+			macros: testMacros
 		)
 #else
-		throw XCTSkip("macros are only supported when running tests for the host platform")
+		throw XCTSkip("Macros are only supported when running tests for the host platform.")
 #endif
 	}
 	
-	func testMacroWithStringLiteral() throws {
-#if canImport(SafeGlobalMacros)
-		assertMacroExpansion(
-				#"""
-				#stringify("Hello, \(name)")
-				"""#,
-				expandedSource: #"""
-				("Hello, \(name)", #""Hello, \(name)""#)
-				"""#,
-				macros: testMacros
-		)
-#else
-		throw XCTSkip("macros are only supported when running tests for the host platform")
-#endif
-	}
 }
