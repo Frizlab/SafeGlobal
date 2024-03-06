@@ -15,6 +15,10 @@ public class SafeGlobal<T : Sendable> : @unchecked Sendable {
 		self._wrappedValue = wrappedValue
 	}
 	
+	public init<V>() where T == Optional<V> {
+		self._wrappedValue = nil
+	}
+	
 	private var _wrappedValue: T
 	
 }

@@ -44,13 +44,20 @@ public struct SafeGlobalMacro : PeerMacro, AccessorMacro {
 			binding.pattern = PatternSyntax(pattern)
 			/* Set the variable type if present. */
 			if var typeAnnotation = binding.typeAnnotation {
-				typeAnnotation.type = "SafeGlobal<\(typeAnnotation.type.trimmed)>"
+				let type = if let implicitlyUnwrappedType = typeAnnotation.type.as(ImplicitlyUnwrappedOptionalTypeSyntax.self) {
+					TypeSyntax(OptionalTypeSyntax(wrappedType: implicitlyUnwrappedType.wrappedType))
+				} else {
+					typeAnnotation.type
+				}
+				typeAnnotation.type = "SafeGlobal<\(type.trimmed)>"
 				binding.typeAnnotation = typeAnnotation
 			}
-			/* Change the variable initial value if present. */
+			/* Set the variable initial value if present. */
 			if var initializer = binding.initializer {
 				initializer.value = "SafeGlobal(wrappedValue: \(initializer.value))"
 				binding.initializer = initializer
+			} else {
+				binding.initializer = InitializerClauseSyntax(value: "SafeGlobal()" as ExprSyntax)
 			}
 			return binding
 		})
