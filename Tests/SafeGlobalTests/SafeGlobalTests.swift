@@ -20,7 +20,7 @@ let testMacros: [String: Macro.Type] = [
 
 final class SafeGlobalTests : XCTestCase {
 	
-	func testMacro() throws {
+	func testMacroFullVar() throws {
 #if canImport(SafeGlobalMacros)
 		assertMacroExpansion("""
 				enum Conf : Sendable {
@@ -35,6 +35,32 @@ final class SafeGlobalTests : XCTestCase {
 					    }
 					    set {
 					        _dummy.wrappedValue = newValue
+					    }
+					}
+				
+					static let _dummy: SafeGlobal<Int> = SafeGlobal(wrappedValue: 42)
+				}
+				""",
+			macros: testMacros
+		)
+#else
+		throw XCTSkip("Macros are only supported when running tests for the host platform.")
+#endif
+	}
+	
+	func testMacroFullLet() throws {
+#if canImport(SafeGlobalMacros)
+		/* Apparently the computed let property is ok for the compiler? Weird… */
+		assertMacroExpansion("""
+				enum Conf : Sendable {
+					@SafeGlobal static let dummy: Int = 42
+				}
+				""",
+			expandedSource: """
+				enum Conf : Sendable {
+					static let dummy: Int {
+					    get {
+					        _dummy.wrappedValue
 					    }
 					}
 				

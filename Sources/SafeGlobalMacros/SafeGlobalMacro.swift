@@ -76,10 +76,10 @@ public struct SafeGlobalMacro : PeerMacro, AccessorMacro {
 			throw Err.internalError
 		}
 		let underscore = "_" + patternName
-		return [
-			"get {\(raw: underscore).wrappedValue}",
-			"set {\(raw: underscore).wrappedValue = newValue}"
-		]
+		return (
+			                                                   ["get {\(raw: underscore).wrappedValue}"] +
+			(variable.bindingSpecifier.trimmed.text == "var" ? ["set {\(raw: underscore).wrappedValue = newValue}"] : [])
+		)
 	}
 	
 }

@@ -6,6 +6,7 @@ import SafeGlobal
 
 enum Conf : Sendable {
 	
-	@SafeGlobal static var dummy: Int = 42
+	@SafeGlobal static let dummy1: Int = 42
+	@SafeGlobal static var dummy2: Int = 42
 	
 }
