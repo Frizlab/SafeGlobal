@@ -23,12 +23,6 @@ public class SafeGlobal<T : Sendable> : @unchecked Sendable {
 	
 }
 
-
-@attached(accessor)
-@attached(peer, names: prefixed(_))
-public macro SafeGlobal() = #externalMacro(module: "SafeGlobalMacros", type: "SafeGlobalMacro")
-
-
 /* We use the same lock for all SafeGlobal instances.
  * We could use one lock per instance instead but there’s no need AFAICT.
  * We do not use OSAllocatedUnfairLock because it’s not Linuxy. */
