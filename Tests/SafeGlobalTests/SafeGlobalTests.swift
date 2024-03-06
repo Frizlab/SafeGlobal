@@ -38,7 +38,7 @@ final class SafeGlobalTests : XCTestCase {
 					    }
 					}
 				
-					static var _dummy: SafeGlobal<Int> = SafeGlobal(wrappedValue: 42)
+					static let _dummy: SafeGlobal<Int> = SafeGlobal(wrappedValue: 42)
 				}
 				""",
 			macros: testMacros

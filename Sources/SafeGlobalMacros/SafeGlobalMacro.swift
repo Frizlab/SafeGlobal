@@ -57,6 +57,7 @@ public struct SafeGlobalMacro : PeerMacro, AccessorMacro {
 		variables.attributes = variables.attributes.filter{ attribute in
 			return (attribute.as(AttributeSyntax.self)?.attributeName.as(IdentifierTypeSyntax.self)?.name.text != "SafeGlobal")
 		}
+		variables.bindingSpecifier = "let"
 		return [DeclSyntax(variables)]
 	}
 	
