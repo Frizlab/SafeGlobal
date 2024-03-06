@@ -1,6 +1,7 @@
 import Foundation
 
 import SwiftCompilerPlugin
+import SwiftDiagnostics
 import SwiftSyntax
 import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
@@ -57,7 +58,36 @@ public struct SafeGlobalMacro : PeerMacro, AccessorMacro {
 		variables.attributes = variables.attributes.filter{ attribute in
 			return (attribute.as(AttributeSyntax.self)?.attributeName.as(IdentifierTypeSyntax.self)?.name.text != "SafeGlobal")
 		}
+		/* Force the variable to be a constant (the wrapper will never have to change). */
 		variables.bindingSpecifier = "let"
+		/* Set the variable as private. */
+		variables.modifiers = variables.modifiers.filter{ modifier in
+			let name = modifier.trimmed.name.text
+			/* Full list as of swift-syntax 510.0.0:
+			 *  (`'__consuming'` | `'__setter_access'` | `'_const'` | `'_local'` | `'actor'` | `'async'` | `'borrowing'` |
+			 *   `'class'` | `'consuming'` | `'convenience'` | `'distributed'` | `'dynamic'` | `'fileprivate'` | `'final'` |
+			 *   `'indirect'` | `'infix'` | `'internal'` | `'isolated'` | `'lazy'` | `'mutating'` | `'nonisolated'` | `'nonmutating'` |
+			 *   `'open'` | `'optional'` | `'override'` | `'package'` | `'postfix'` | `'prefix'` | `'private'` | `'public'` | `'reasync'` |
+			 *   `'required'` | `'static'` | `'unowned'` | `'weak'`)
+			 * The list can be found in the documentation of `DeclModifierSyntax`.
+			 * There are probably a bunch of modifiers where we should have specific actions, but for now we’ll let it be. */
+			let removedModifiers: Set<String> = ["public", "internal", "fileprivate", "private"]
+			let knownModifiers: Set<String> = removedModifiers.union(["static"])
+			if !knownModifiers.contains(name) {
+				context.diagnose(
+					Diagnostic(
+						node: Syntax(modifier),
+						message: SimpleDiagnosticMessage(
+							message: "Ignored modifier “\(name)”. The author of SafeGlobal does not have time to do everything :)",
+							diagnosticID: MessageID(domain: "SafeGlobal", id: "UnknownModifier"),
+							severity: .warning
+						)
+					)
+				)
+			}
+			return !removedModifiers.contains(name)
+		}
+		variables.modifiers.insert(.init(name: "private"), at: variables.modifiers.startIndex)
 		return [DeclSyntax(variables)]
 	}
 	
