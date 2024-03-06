@@ -29,18 +29,28 @@ public struct SafeGlobalMacro : PeerMacro, AccessorMacro {
 		guard var variables = declaration.as(VariableDeclSyntax.self) else {
 			throw Err.appliedToNonVariable
 		}
-		/* Add the _ prefix to the variable(s) name(s).
-		 * We do it for all the variables if there are many but
+		/* We apply the variable transformations for all the variables but
 		 *  we could guard there is only one as a peer macro can only be applied to a single variable. */
 		variables.bindings = try PatternBindingListSyntax(variables.bindings.children(viewMode: .all).map{ binding in
 			guard var binding = binding.as(PatternBindingSyntax.self) else {
 				throw Err.internalError
 			}
+			/* Add the _ prefix to the variable name. */
 			guard var pattern = binding.pattern.as(IdentifierPatternSyntax.self) else {
 				throw Err.appliedToNonIdentifierVariable
 			}
 			pattern.identifier = "_\(raw: pattern.identifier.text)"
 			binding.pattern = PatternSyntax(pattern)
+			/* Set the variable type if present. */
+			if var typeAnnotation = binding.typeAnnotation {
+				typeAnnotation.type = "SafeGlobal<\(typeAnnotation.type.trimmed)>"
+				binding.typeAnnotation = typeAnnotation
+			}
+			/* Change the variable initial value if present. */
+			if var initializer = binding.initializer {
+				initializer.value = "SafeGlobal(wrappedValue: \(initializer.value))"
+				binding.initializer = initializer
+			}
 			return binding
 		})
 		/* Remove the @SafeGlobal annotation. */
