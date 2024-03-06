@@ -12,7 +12,10 @@ let package = Package(
 		.executable(name: "SafeGlobalClient", targets: ["SafeGlobalClient"]),
 	],
 	dependencies: [
-		.package(url: "https://github.com/apple/swift-syntax.git", from: "509.0.0")
+		/* TODO: CI should test the package w/ all of the major versions we support of swift-syntax specified explicitly. */
+		.package(url: "https://github.com/apple/swift-syntax.git", "509.0.0"..<"511.0.0"),
+//		.package(url: "https://github.com/apple/swift-syntax.git", from: "509.0.0"),
+//		.package(url: "https://github.com/apple/swift-syntax.git", from: "510.0.0"),
 	],
 	targets: [
 		/* Macro implementation that performs the source transformation of a macro. */
