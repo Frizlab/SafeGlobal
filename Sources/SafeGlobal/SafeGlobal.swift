@@ -19,7 +19,7 @@ public class SafeGlobal<T : Sendable> : @unchecked Sendable {
 }
 
 
-//@attached(accessor)
+@attached(accessor)
 @attached(peer, names: prefixed(_))
 public macro SafeGlobal() = #externalMacro(module: "SafeGlobalMacros", type: "SafeGlobalMacro")
 

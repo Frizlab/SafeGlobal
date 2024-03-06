@@ -29,7 +29,9 @@ public struct SafeGlobalMacro : PeerMacro, AccessorMacro {
 		guard var variables = declaration.as(VariableDeclSyntax.self) else {
 			throw Err.appliedToNonVariable
 		}
-		/* Add the _ prefix to the variable(s) name(s). */
+		/* Add the _ prefix to the variable(s) name(s).
+		 * We do it for all the variables if there are many but
+		 *  we could guard there is only one as a peer macro can only be applied to a single variable. */
 		variables.bindings = try PatternBindingListSyntax(variables.bindings.children(viewMode: .all).map{ binding in
 			guard var binding = binding.as(PatternBindingSyntax.self) else {
 				throw Err.internalError
@@ -53,7 +55,20 @@ public struct SafeGlobalMacro : PeerMacro, AccessorMacro {
 		providingAccessorsOf declaration: some DeclSyntaxProtocol,
 		in context: some MacroExpansionContext
 	) throws -> [AccessorDeclSyntax] {
-		return []
+		guard let variable = declaration.as(VariableDeclSyntax.self) else {
+			throw Err.appliedToNonVariable
+		}
+		guard let binding = variable.bindings.first, variable.bindings.count == 1,
+				let patternName = binding.pattern.as(IdentifierPatternSyntax.self)?.identifier.text
+		else {
+			/* The variable must have 1 binding exactly as accessor macro can only be applied on single variables. */
+			throw Err.internalError
+		}
+		let underscore = "_" + patternName
+		return [
+			"get {\(raw: underscore).wrappedValue}",
+			"set {\(raw: underscore).wrappedValue = newValue}"
+		]
 	}
 	
 }

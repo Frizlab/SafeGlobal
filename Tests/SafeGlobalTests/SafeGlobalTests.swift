@@ -29,7 +29,14 @@ final class SafeGlobalTests : XCTestCase {
 				""",
 			expandedSource: """
 				enum Conf : Sendable {
-					static var dummy: Int = 42
+					static var dummy: Int {
+					    get {
+					        _dummy.wrappedValue
+					    }
+					    set {
+					        _dummy.wrappedValue = newValue
+					    }
+					}
 				
 					static var _dummy: Int = 42
 				}
