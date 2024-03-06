@@ -1,6 +1,6 @@
 import Foundation
 
-/* Inspiration from <https://forums.swift.org/t/static-property-wrappers-and-strict-concurrency-in-5-10/70116/15>. */
+/* Inspiration from <https://forums.swift.org/t/70116/15>. */
 
 
 //@propertyWrapper
