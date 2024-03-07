@@ -3,8 +3,8 @@ import Foundation
 /* Inspiration from <https://forums.swift.org/t/70116/15>. */
 
 
-//@propertyWrapper
-public final class SafeGlobal<T : Sendable> : @unchecked Sendable {
+extension SafeGlobal : @unchecked Sendable where T : Sendable {}
+public final class SafeGlobal<T> {
 	
 	public var wrappedValue: T {
 		get {safeGlobalLock.withLock{ _wrappedValue }}
