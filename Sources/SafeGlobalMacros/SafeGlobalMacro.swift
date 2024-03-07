@@ -69,7 +69,7 @@ public struct SafeGlobalMacro : PeerMacro, AccessorMacro {
 			 * The list can be found in the documentation of `DeclModifierSyntax`.
 			 * There are probably a bunch of modifiers where we should have specific actions, but for now we’ll let it be. */
 			let removedModifiers: Set<String> = ["public", "internal", "fileprivate", "private"]
-			let knownModifiers: Set<String> = removedModifiers.union(["static"])
+			let knownModifiers: Set<String> = removedModifiers.union(["nonisolated", "static"])
 			if !knownModifiers.contains(name) {
 				context.diagnose(
 					Diagnostic(
