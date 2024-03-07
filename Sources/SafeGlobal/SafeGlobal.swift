@@ -4,7 +4,7 @@ import Foundation
 
 
 //@propertyWrapper
-public class SafeGlobal<T : Sendable> : @unchecked Sendable {
+public final class SafeGlobal<T : Sendable> : @unchecked Sendable {
 	
 	public var wrappedValue: T {
 		get {safeGlobalLock.withLock{ _wrappedValue }}
