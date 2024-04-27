@@ -10,8 +10,6 @@ import SwiftSyntaxMacros
 
 public struct SafeGlobalMacro : PeerMacro, AccessorMacro {
 	
-	struct NotImplemented : Error {}
-	
 	public static func expansion(
 		of node: AttributeSyntax,
 		providingPeersOf declaration: some DeclSyntaxProtocol,
