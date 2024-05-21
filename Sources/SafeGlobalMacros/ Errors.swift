@@ -2,7 +2,7 @@ import Foundation
 
 
 
-public enum SafeGlobalMacroError : Error {
+public enum SafeGlobalMacrosError : Error {
 	
 	case appliedToNonVariable
 	case appliedToNonIdentifierVariable
@@ -10,4 +10,4 @@ public enum SafeGlobalMacroError : Error {
 	case internalError
 	
 }
-typealias Err = SafeGlobalMacroError
+typealias Err = SafeGlobalMacrosError
