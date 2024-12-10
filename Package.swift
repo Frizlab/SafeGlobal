@@ -3,6 +3,9 @@ import PackageDescription
 import CompilerPluginSupport
 
 
+//let swiftSettings: [SwiftSetting] = []
+let swiftSettings: [SwiftSetting] = [.enableExperimentalFeature("StrictConcurrency")]
+
 let package = Package(
 	name: "SafeGlobal",
 	platforms: [.macOS(.v10_15), .iOS(.v13), .tvOS(.v13), .watchOS(.v6)],
@@ -23,14 +26,15 @@ let package = Package(
 			dependencies: [
 				.product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
 				.product(name: "SwiftCompilerPlugin", package: "swift-syntax")
-			]
+			],
+			swiftSettings: swiftSettings
 		),
 		
 		/* Library that exposes a macro as part of its API, which is used in client programs. */
-		.target(name: "SafeGlobal", dependencies: ["SafeGlobalMacros"]),
+		.target(name: "SafeGlobal", dependencies: ["SafeGlobalMacros"], swiftSettings: swiftSettings),
 		
 		/* A client of the library, which is able to use the macro in its own code. */
-		.executableTarget(name: "SafeGlobalClient", dependencies: ["SafeGlobal"]),
+		.executableTarget(name: "SafeGlobalClient", dependencies: ["SafeGlobal"], swiftSettings: swiftSettings),
 		
 		/* A test target used to develop the macro implementation. */
 		.testTarget(
@@ -38,7 +42,8 @@ let package = Package(
 			dependencies: [
 				"SafeGlobalMacros",
 				.product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
-			]
+			],
+			swiftSettings: swiftSettings
 		),
 	]
 )
