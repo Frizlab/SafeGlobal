@@ -3,7 +3,6 @@ import PackageDescription
 import CompilerPluginSupport
 
 
-
 let package = Package(
 	name: "SafeGlobal",
 	platforms: [.macOS(.v10_15), .iOS(.v13), .tvOS(.v13), .watchOS(.v6)],
@@ -12,9 +11,10 @@ let package = Package(
 	],
 	dependencies: [
 		/* TODO: CI should test the package w/ all of the major versions we support of swift-syntax specified explicitly. */
-		.package(url: "https://github.com/swiftlang/swift-syntax.git", "509.0.0"..<"511.0.0"),
-//		.package(url: "https://github.com/swiftlang/swift-syntax.git", from: "509.0.0"),
+		.package(url: "https://github.com/swiftlang/swift-syntax.git", "509.0.0"..<"601.0.0"),
+//		.package(url: "https://github.com/swiftlang/swift-syntax.git", from: "600.0.0"),
 //		.package(url: "https://github.com/swiftlang/swift-syntax.git", from: "510.0.0"),
+//		.package(url: "https://github.com/swiftlang/swift-syntax.git", from: "509.0.0"),
 	],
 	targets: [
 		/* Macro implementation that performs the source transformation of a macro. */
