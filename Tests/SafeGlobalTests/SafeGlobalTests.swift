@@ -30,18 +30,19 @@ final class SafeGlobalTests : XCTestCase {
 			expandedSource: """
 				enum Conf : Sendable {
 					static var dummy: Int {
-					    get {
-					        _dummy.wrappedValue
-					    }
-					    set {
-					        _dummy.wrappedValue = newValue
-					    }
+						get {
+							_dummy.wrappedValue
+						}
+						set {
+							_dummy.wrappedValue = newValue
+						}
 					}
 				
 					private static let _dummy: SafeGlobal<Int> = SafeGlobal(wrappedValue: 42)
 				}
 				""",
-			macros: testMacros
+			macros: testMacros,
+			indentationWidth: .tabs(1)
 		)
 #else
 		throw XCTSkip("Macros are only supported when running tests for the host platform.")
@@ -58,18 +59,19 @@ final class SafeGlobalTests : XCTestCase {
 			expandedSource: """
 				enum Conf : Sendable {
 					static var dummy: Int! {
-					    get {
-					        _dummy.wrappedValue
-					    }
-					    set {
-					        _dummy.wrappedValue = newValue
-					    }
+						get {
+							_dummy.wrappedValue
+						}
+						set {
+							_dummy.wrappedValue = newValue
+						}
 					}
 				
 					private static let _dummy: SafeGlobal<Int?> = SafeGlobal()
 				}
 				""",
-			macros: testMacros
+			macros: testMacros,
+			indentationWidth: .tabs(1)
 		)
 #else
 		throw XCTSkip("Macros are only supported when running tests for the host platform.")
@@ -87,15 +89,16 @@ final class SafeGlobalTests : XCTestCase {
 			expandedSource: """
 				enum Conf : Sendable {
 					static let dummy: Int {
-					    get {
-					        _dummy.wrappedValue
-					    }
+						get {
+							_dummy.wrappedValue
+						}
 					}
 				
 					private static let _dummy: SafeGlobal<Int> = SafeGlobal(wrappedValue: 42)
 				}
 				""",
-			macros: testMacros
+			macros: testMacros,
+			indentationWidth: .tabs(1)
 		)
 #else
 		throw XCTSkip("Macros are only supported when running tests for the host platform.")
